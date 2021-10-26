@@ -3,7 +3,7 @@ name: Alpine Linux CI
 on:
   push:
     branches: [main]
-  pull_requests:
+  pull_request:
     branches: [main]
 
 jobs:
@@ -15,3 +15,8 @@ jobs:
     - run: docker build  --file Dockerfile .
       env:
         DOCKER_BUILDKIT: "1"
+  build:
+    name: Build stable release
+    runs-on: ubuntu-2004
+    steps:
+    - run: echo TODO
