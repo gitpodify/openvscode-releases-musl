@@ -28,14 +28,13 @@ FROM alpine:3.14 as release
 
 ARG USERNAME=gitpod
 ARG USER_UID=1000
-ARG USER_GID=$USER_UID
+#ARG USER_GID=$USER_UID
 
 # Install some dependencies
 RUN apk add --no-cache wget curl git sudo dumb-init
 
 # Creating the user and usergroup
-RUN groupadd --gid $USER_GID $USERNAME \
-    && useradd --uid $USER_UID --gid $USERNAME -m $USERNAME \
+RUN adduser -D -u $USER_UID \
     && echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME \
     && chmod 0440 /etc/sudoers.d/$USERNAME
 
