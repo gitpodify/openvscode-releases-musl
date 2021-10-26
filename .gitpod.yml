@@ -1,0 +1,5 @@
+image: gitpod/workspace-full
+vscode:
+  extensions:
+    - eamodio.gitlens
+    - ms-azuretools.vscode-docker
