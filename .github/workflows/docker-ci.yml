@@ -14,6 +14,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+    - name: Hydrate GitHub CLI to bump ratelimits
+      run: |
+        echo ${{secrets.GH_SERVICE_ACCOUNT_API_TOKEN}} |  gh auth login --with-token
+        gh auth status
     - name: Install Dive
       run: |
         wget https://github.com/wagoodman/dive/releases/download/v0.10.0/dive_0.10.0_linux_amd64.deb -O /tmp/dive_linux_amd64.deb
@@ -27,8 +31,6 @@ jobs:
         CI=true dive ghcr.io/ghcr.io/gitpodify/openvscode-releases-musl/nightly:dev
       env:
         DOCKER_BUILDKIT: "1"
-        # Needed to ensure GitHub CLI is hydrated with our bot's PAT
-        GITHUB_TOKEN: ${{secrets.GH_SERVICE_ACCOUNT_API_TOKEN}}
     - name: Extract server-pkg from image
       run: |
         mkdir artifacts/images -p
