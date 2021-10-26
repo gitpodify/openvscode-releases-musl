@@ -1,6 +1,6 @@
 FROM alpine:3.14 as bulldozer
 
-RUN apk add nodejs npm alpine-sdk xvfb git gtk+3.0 python3 py3-pip; \
+RUN apk add nodejs npm alpine-sdk xvfb git gtk+3.0 python3 py3-pip chromium dbus libsecret libsecret-static; \
     npm i -g yarn
 
 WORKDIR /usr/src

@@ -1,0 +1,17 @@
+name: Alpine Linux CI
+
+on:
+  push:
+    branches: [main]
+  pull_requests:
+    branches: [main]
+
+jobs:
+  test:
+    name: Test Build
+    runs-on: ubuntu-2004
+    steps:
+    - uses: actions/checkout@v2
+    - run: docker build  --file Dockerfile .
+      env:
+        DOCKER_BUILDKIT: "1"
