@@ -8,7 +8,7 @@ WORKDIR /usr/src
 # Clone repo and checkout to stable release tag
 ARG RELEASE_TAG
 RUN git clone https://github.com/gitpod-io/openvscode-server openvscode-server; \
-    git -C "./openvscode-server" checkout openvscode-server-v$RELEASE_TAG
+    git -C "./openvscode-server" checkout openvscode-server-$RELEASE_TAG
 
 WORKDIR /usr/src/openvscode-server
 

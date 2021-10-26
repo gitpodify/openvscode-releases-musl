@@ -3,20 +3,46 @@ name: Alpine Linux CI
 on:
   push:
     branches: [main]
+    paths:
+      - Dockerfile
+      - .github/workflows/docker-ci.yml
   pull_request:
     branches: [main]
 
 jobs:
-  test:
-    name: Test Build
-    runs-on: ubuntu-2004
+  amd64:
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - run: docker build  --file Dockerfile .
+    - name: Install Dive
+      run: |
+        wget https://github.com/wagoodman/dive/releases/download/v0.10.0/dive_0.10.0_linux_amd64.deb -O /tmp/dive_linux_amd64.deb
+        sudo dpkg -i /tmp/dive_linux_amd64.deb
+    - name: Run test build and analyze size
+      run: |
+        NIGHTLY_RELEASE_TAG="$(gh api repos/gitpod-io/openvscode-server/releases | jq -r 'map(select(.prerelease)) | first | .tag_name' | sed -E 's/openvscode-server-//gm;t;d')"
+
+        docker build  --file Dockerfile --tag ghcr.io/gitpodify/openvscode-releases-musl/nightly:dev --build-arg=RELEASE_TAG=$NIGHTLY_RELEASE_TAG .
+        
+        CI=true dive ghcr.io/ghcr.io/gitpodify/openvscode-releases-musl/nightly:dev
       env:
         DOCKER_BUILDKIT: "1"
-  build:
-    name: Build stable release
-    runs-on: ubuntu-2004
-    steps:
-    - run: echo TODO
+    - name: Extract server-pkg from image
+      run: |
+        mkdir artifacts/images -p
+        mkdir artifacts/builds
+
+        CONTAINER_ID=$(docker create ghcr.io/gitpodify/openvscode-releases-musl/nightly:dev)
+        docker cp $CONTAINER_ID:/home/gitpod/.gitpodified-server $GITHUB_WORKSPACE/artifacts/builds/amd64
+    - name: Export as artifact
+      run: docker save -o artifacts/images/openvscode-server-devbuild-amd64.tar ghcr.io/gitpodify/openvscode-releases-musl/nightly:dev
+    - name: Upload image export
+      uses: actions/upload-artifact@v2
+      with:
+        name: nightly-devpush-amd64-docker-image
+        path: artifacts/images/openvscode-server-devbuild-amd64.tar
+    - name: Upload tar.gz amd64 build
+      uses: actions/upload-artifact@v2
+      with:
+        name: nightly-devpush-amd64-builds
+        path: artifacts/builds/amd64
