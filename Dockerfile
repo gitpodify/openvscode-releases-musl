@@ -31,7 +31,7 @@ ARG USER_UID=1000
 ARG USER_GID=$USER_UID
 
 # Install some dependencies
-RUN apk add wget curl git sudo dumb-init
+RUN apk add --no-cache wget curl git sudo dumb-init
 
 # Creating the user and usergroup
 RUN groupadd --gid $USER_GID $USERNAME \
@@ -42,7 +42,7 @@ RUN groupadd --gid $USER_GID $USERNAME \
 COPY --from=bulldozer /usr/src/openvscode-server/server-pkg /home/gitpod/.gitpodified-server
 
 RUN chown -R $USERNAME:$USERNAME /home/gitpod/.gitpodified-server; \
-    mkdir -p /workspace;
+    mkdir -p /workspace; \
     chown -R $USERNAME:$USERNAME /workspace;
 
 USER $USERNAME

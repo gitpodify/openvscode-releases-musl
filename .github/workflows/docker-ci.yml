@@ -16,7 +16,7 @@ jobs:
     - uses: actions/checkout@v2
     - name: Hydrate GitHub CLI to bump ratelimits
       run: |
-        echo ${{secrets.GH_SERVICE_ACCOUNT_API_KEY}} |  gh auth login --with-token
+        echo ${{secrets.GH_SERVICE_ACCOUNT_API_KEY}} | gh auth login --with-token
         gh auth status
     - name: Install Dive
       run: |
