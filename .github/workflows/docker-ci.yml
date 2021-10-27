@@ -33,8 +33,8 @@ jobs:
         docker build  --file Dockerfile --tag ghcr.io/gitpodify/openvscode-releases-musl/nightly:dev --build-arg=RELEASE_TAG=$NIGHTLY_RELEASE_TAG .
         
         CI=true dive ghcr.io/ghcr.io/gitpodify/openvscode-releases-musl/nightly:dev
-      env:
-        DOCKER_BUILDKIT: "1"
+      #env:
+      #  DOCKER_BUILDKIT: "1"
     - name: Extract server-pkg from image
       run: |
         mkdir artifacts/images -p

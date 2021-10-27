@@ -7,10 +7,12 @@ RUN apk add nodejs npm alpine-sdk xvfb git gtk+3.0 \
     bash coreutils; \
     npm i -g yarn
 
+#COPY scripts/build-code.sh /usr/local/bin/build-code
 WORKDIR /usr/src
 
 # Clone repo and checkout to stable release tag
 ARG RELEASE_TAG
+#ARG MAX_MEMORY_SIZE=4095
 RUN git clone https://github.com/gitpod-io/openvscode-server openvscode-server; \
     git -C "./openvscode-server" checkout openvscode-server-$RELEASE_TAG
 
@@ -20,13 +22,13 @@ WORKDIR /usr/src/openvscode-server
 RUN PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 ELECTRON_SKIP_BINARY_DOWNLOAD=1 yarn --frozen-lockfile --network-timeout 180000; yarn playwright-install
 
 # Prep for distrib
-RUN yarn gulp server-min
+RUN yarn gulp server-min; ls -Al
 
 # Run integration tests
-RUN set -e; yarn --cwd test/smoke compile; yarn --cwd test/integration/browser compile; \
-    export VSCODE_REMOTE_SERVER_PATH="/usr/src/openvscode-server/server-pkg"; \
-    ./resources/server/test/test-web-integration.sh --browser chromium; \
-    yarn smoketest --web --headless --electronArgs="--disable-dev-shm-usage --use-gl=swiftshader"
+#RUN set -e; yarn --cwd test/smoke compile; yarn --cwd test/integration/browser compile; \
+#    export VSCODE_REMOTE_SERVER_PATH="/usr/src/openvscode-server/server-pkg"; \
+#    ./resources/server/test/test-web-integration.sh --browser chromium; \
+#    yarn smoketest --web --headless --electronArgs="--disable-dev-shm-usage --use-gl=swiftshader"
 
 FROM alpine:3.14 as release
 
