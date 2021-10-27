@@ -1,0 +1,46 @@
+name: Release Bot
+
+on:
+  workflow_dispatch:
+    inputs:
+      quality:
+        description: "Release cycle to build: Stable or Nightly"
+        required: false
+        default: "nightly"
+
+env:
+  # Needed to ensure GitHub CLI is hydrated with our bot's PAT
+  GITHUB_TOKEN: ${{secrets.GH_SERVICE_ACCOUNT_API_TOKEN}}
+  # Assume we're building from nightly releases
+  QUALITY: ${{ github.event.inputs.quality || 'nightly' }}
+  CONTAINER_REGISTRY_NAMESPACE: gitpodify/openvscode-releases-musl/${{ github.event.inputs.quality || 'nightly' }}
+
+jobs:
+  nightly:
+    name: Nightly Release Build
+    if: env.QUALITY == 'nightly' || env.QUALITY == 'all'
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Hydrate GitHub CLI to bump ratelimits
+      run: |
+        echo ${{secrets.GH_SERVICE_ACCOUNT_API_TOKEN}} |  gh auth login --with-token
+        gh auth status
+    - name: Extract latest insiders tag
+      run: |
+        NIGHTLY_RELEASE_TAG="$(gh api repos/gitpod-io/openvscode-server/releases | jq -r 'map(select(.prerelease)) | first | .tag_name' | sed -E 's/openvscode-server-//gm;t;d')"
+        IMAGE_TAG="$echo $NIGHTLY_RELEASE_TAG | sed -E 's/nightly-v//gm;t;d')
+  stable:
+    name: Stable Release Build
+    if: env.QUALITY == 'stable' || env.QUALITY == 'all'
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Hydrate GitHub CLI to bump ratelimits
+      run: |
+        echo ${{secrets.GH_SERVICE_ACCOUNT_API_TOKEN}} |  gh auth login --with-token
+        gh auth status
+    - name: Extract latest insiders tag
+      run: |
+        STABLE_RELEASE_TAG="$(gh api repos/gitpod-io/openvscode-server/releases/latest | jq -r '.tag_name' | sed -E 's/openvscode-server-//gm;t;d')"
+        IMAGE_TAG="$echo $STABLE_RELEASE_TAG | sed -E 's/v//gm;t;d')
