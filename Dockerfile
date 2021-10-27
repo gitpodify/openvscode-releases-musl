@@ -1,6 +1,9 @@
 FROM alpine:3.14 as bulldozer
 
-RUN apk add nodejs npm alpine-sdk xvfb git gtk+3.0 python3 py3-pip chromium dbus libsecret libsecret-static; \
+# Install package dependencies and Yarn
+RUN apk add nodejs npm alpine-sdk xvfb git gtk+3.0 \
+    python3 py3-pip chromium dbus libx11-dev \
+    python2 libsecret-dev libxkbfile-dev; \
     npm i -g yarn
 
 WORKDIR /usr/src
