@@ -3,7 +3,8 @@ FROM alpine:3.14 as bulldozer
 # Install package dependencies and Yarn
 RUN apk add nodejs npm alpine-sdk xvfb git gtk+3.0 \
     python3 py3-pip chromium dbus libx11-dev \
-    python2 libsecret-dev libxkbfile-dev; \
+    python2 libsecret-dev libxkbfile-dev \
+    bash coreutils; \
     npm i -g yarn
 
 WORKDIR /usr/src
@@ -34,7 +35,7 @@ ARG USER_UID=1000
 #ARG USER_GID=$USER_UID
 
 # Install some dependencies
-RUN apk add --no-cache wget curl git sudo dumb-init
+RUN apk add --no-cache wget curl git sudo dumb-init bash coreutils
 
 # Creating the user and usergroup
 RUN adduser -D -u $USER_UID $USERNAME \
