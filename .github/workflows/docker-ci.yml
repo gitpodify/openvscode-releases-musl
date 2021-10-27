@@ -9,6 +9,10 @@ on:
   pull_request:
     branches: [main]
 
+env:
+  # Needed to ensure GitHub CLI is hydrated with our bot's PAT
+  GITHUB_TOKEN: ${{secrets.GH_SERVICE_ACCOUNT_API_TOKEN}}
+
 jobs:
   amd64:
     runs-on: ubuntu-latest

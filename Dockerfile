@@ -34,7 +34,7 @@ ARG USER_UID=1000
 RUN apk add --no-cache wget curl git sudo dumb-init
 
 # Creating the user and usergroup
-RUN adduser -D -u $USER_UID \
+RUN adduser -D -u $USER_UID $USERNAME \
     && echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME \
     && chmod 0440 /etc/sudoers.d/$USERNAME
 
