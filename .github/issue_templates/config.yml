@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: GitLab Issue Tracker - Regarding the Docker images and CI stuff
+    url: https://gitlab.com/gitpodify/openvscode-releases-musl/issues
+    about: Since GitLab.com is our canonical code host for this repository and we're just using GitHub-hosted Action runners for more performance, please take it there.
+  - name: Have issues related to OpenVSCode Server itself?
+    url: https://github.com/gitpod-io/openvscode-server/issues
+    about: Any issues related to OpenVSCode Server itself should be reported there instead.
+  - name: Have issues with the upstream VS Code?
+    url: https://github.com/microsoft/vscode/issues
+    about: Any issues related to VS Code APIs and features itself should go there instead.
