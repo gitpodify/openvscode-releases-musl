@@ -26,7 +26,7 @@ jobs:
       run: |
         curl -s --compressed "https://madebythepinshub.gitlab.io/ppa/releases-key.gpg" | sudo apt-key add -;
         echo "deb https://madebythepinshub.gitlab.io/ppa ./" | sudo tee /etc/apt/sources.list.d/thepinsteam-ppa-gitlab.list
-        sudo apt install dive -y
+        sudo apt update; sudo apt install dive -y
     - name: Run test build and analyze size
       run: |
         NIGHTLY_RELEASE_TAG="$(gh api repos/gitpod-io/openvscode-server/releases | jq -r 'map(select(.prerelease)) | first | .tag_name' | sed -E 's/openvscode-server-//gm;t;d')"
