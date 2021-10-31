@@ -19,16 +19,10 @@ RUN git clone https://github.com/gitpod-io/openvscode-server openvscode-server; 
 WORKDIR /usr/src/openvscode-server
 
 # Install deps
-RUN PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 ELECTRON_SKIP_BINARY_DOWNLOAD=1 yarn --frozen-lockfile --network-timeout 180000; yarn playwright-install
+RUN PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 ELECTRON_SKIP_BINARY_DOWNLOAD=1 yarn --frozen-lockfile --network-timeout 180000
 
 # Prep for distrib
 RUN yarn gulp server-min; ls -Al
-
-# Run integration tests
-#RUN set -e; yarn --cwd test/smoke compile; yarn --cwd test/integration/browser compile; \
-#    export VSCODE_REMOTE_SERVER_PATH="/usr/src/openvscode-server/server-pkg"; \
-#    ./resources/server/test/test-web-integration.sh --browser chromium; \
-#    yarn smoketest --web --headless --electronArgs="--disable-dev-shm-usage --use-gl=swiftshader"
 
 FROM alpine:3.14 as release
 
