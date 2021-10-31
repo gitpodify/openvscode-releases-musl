@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
     paths:
-      - Dockerfile
+      - docker/build.Dockerfile
       - .github/workflows/docker-ci.yml
   pull_request:
     branches: [main]
@@ -24,13 +24,14 @@ jobs:
         gh auth status
     - name: Install Dive
       run: |
-        wget https://github.com/wagoodman/dive/releases/download/v0.10.0/dive_0.10.0_linux_amd64.deb -O /tmp/dive_linux_amd64.deb
-        sudo dpkg -i /tmp/dive_linux_amd64.deb
+        curl -s --compressed "https://madebythepinshub.gitlab.io/ppa/releases-key.gpg" | sudo apt-key add -;
+        echo "deb https://madebythepinshub.gitlab.io/ppa ./" | sudo tee /etc/apt/sources.list.d/thepinsteam-ppa-gitlab.list
+        sudo apt install dive -y
     - name: Run test build and analyze size
       run: |
         NIGHTLY_RELEASE_TAG="$(gh api repos/gitpod-io/openvscode-server/releases | jq -r 'map(select(.prerelease)) | first | .tag_name' | sed -E 's/openvscode-server-//gm;t;d')"
 
-        docker build  --file Dockerfile --tag ghcr.io/gitpodify/openvscode-releases-musl/nightly:dev --build-arg=RELEASE_TAG=$NIGHTLY_RELEASE_TAG .
+        docker build  --file ./docker/build.Dockerfile --tag ghcr.io/gitpodify/openvscode-releases-musl/nightly:dev --build-arg=RELEASE_TAG=$NIGHTLY_RELEASE_TAG .
         
         CI=true dive ghcr.io/ghcr.io/gitpodify/openvscode-releases-musl/nightly:dev
       #env:
