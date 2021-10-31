@@ -6,4 +6,4 @@ RUN curl -s --compressed "https://madebythepinshub.gitlab.io/ppa/releases-key.gp
     sudo install-packages glab dive
 
 # GitHub CLI
-RUN brew install gh
+RUN brew update; brew upgrade; brew install gh

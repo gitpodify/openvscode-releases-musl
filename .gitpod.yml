@@ -4,3 +4,11 @@ vscode:
   extensions:
     - eamodio.gitlens
     - ms-azuretools.vscode-docker
+tasks:
+  - name: Build Alpine container for devenv
+    init: |
+      docker build -t registry.gitlab.com/gitpodify/openvscode-releases-musl/devenv \
+        --file docker/dev.Dockerfile .
+  - name: Run container
+    command: |
+      docker run --rm -it -v /workspace:/workspace --workdir /workspace -p 8088:3000 registry.gitlab.com/gitpodify/openvscode-releases-musl/devenv
